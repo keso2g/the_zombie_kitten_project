@@ -32,10 +32,18 @@ def view(db: Session = Depends(get_db)):
 # ADD AN ITEM
 @app.post("/add_card/", response_model=CardSchema, status_code=status.HTTP_201_CREATED)
 def add_one(card: CardSchema, db: Session = Depends(get_db)):
-    add_card = Cards(card_effect=card.card_effect,
-                     card_description=card.card_description,
-                     is_exploding_kitten=card.is_exploding_kitten,
-                     is_zombie_kitten=card.is_zombie_kitten)
+    add_card = Cards(
+        card_name=card.card_name,
+        card_description=card.card_description,
+        is_exploding_kitten=card.is_exploding_kitten,
+        is_zombie_kitten=card.is_zombie_kitten,
+        card_type=card.card_type,
+        img_path=card.img_path,
+        is_now=card.is_now,
+        with_cat_paw=card.with_cat_paw,
+        card_count=card.card_count
+    )
+
     db.add(add_card)
     db.commit()
     db.refresh(add_card)
@@ -49,10 +57,16 @@ def update_card(id: int, card: CardSchema, db: Session = Depends(get_db)):
     if id_filter == None:
         raise HTTPException(
             status_code=404, detail=f"Card ID: {id} not found!")
-    id_filter.card_effect = card.card_effect
+    id_filter.card_name = card.card_name
     id_filter.card_description = card.card_description
     id_filter.is_exploding_kitten = card.is_exploding_kitten
-    id_filter.is_zombie_kitten = card.is_exploding_kitten
+    id_filter.is_zombie_kitten = card.is_zombie_kitten
+    id_filter.card_type = card.card_type
+    id_filter.img_path = card.img_path
+    id_filter.is_now = card.is_now
+    id_filter.with_cat_paw = card.with_cat_paw
+    id_filter.card_count = card.card_count
+
     db.commit()
     return id_filter
 
