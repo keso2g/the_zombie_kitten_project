@@ -18,6 +18,6 @@ class Cards(Base):
     is_zombie_kitten = Column(Boolean)
     card_type = Column(String(200))
     img_path = Column(String(200))
-    is_now = Column(Boolean, default=False)
+    is_now = Column(Boolean)
     with_cat_paw = Column(Integer)
     card_count = Column(Integer)

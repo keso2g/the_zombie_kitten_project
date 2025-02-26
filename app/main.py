@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Response, status, Depends, HTTPException
-from sqlalchemy import MetaData, delete, select, update
+from fastapi import FastAPI, Response, status, Depends, HTTPException, APIRouter
+from sqlalchemy import MetaData, select, update, delete
 from sqlalchemy.orm import Session
 from .models import Base, Cards
 from .database import engine, get_db
 from .schema import CardSchema
+
 
 # META
 metadata = MetaData()
@@ -70,9 +71,8 @@ def update_card(id: int, card: CardSchema, db: Session = Depends(get_db)):
     db.commit()
     return id_filter
 
+
 # VIEW AN ITEM
-
-
 @app.get("/cards/{id}", response_model=CardSchema)
 def get_one(id: int, db: Session = Depends(get_db)):
     view = db.query(Cards).filter(Cards.card_id == id).first()
