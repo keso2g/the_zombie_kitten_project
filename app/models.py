@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.sql.expression import null
 
 
 # TABLE
