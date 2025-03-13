@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from ..models import Cards
 from ..database import get_db
 from ..schema import CardList
+import random
 
 card_router = APIRouter(
     prefix="/cards",
@@ -10,6 +11,8 @@ card_router = APIRouter(
 
 
 # VIEW ALL ITEMS
+
+
 @card_router.get("/", response_model=list[CardList])
 def view(db: Session = Depends(get_db)):
     cards = db.query(Cards).order_by(Cards.card_id).all()
@@ -57,14 +60,28 @@ def update_card(id: int, card: CardList, db: Session = Depends(get_db)):
     db.commit()
     return id_filter
 
+# MAKE A RANDOM DECK FOR EACH PLAYER
+
+
+@card_router.get("/get_deck/", tags=["cards"])
+def make_deck(db: Session = Depends(get_db)):
+    cards = db.query(Cards).order_by(Cards.card_id).all()
+    deck_of_cards = []
+    for i in range(len(cards)):
+        deck_of_cards.extend([cards[i].card_id] * cards[i].card_count)
+    random.shuffle(deck_of_cards)
+    return deck_of_cards
+
 
 # VIEW AN ITEM
+
 @card_router.get("/{id}", response_model=CardList, tags=["cards"])
 def get_one(id: int, db: Session = Depends(get_db)):
     view = db.query(Cards).filter(Cards.card_id == id).first()
     if not view:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Card ID: {id} not found!")
+    print(f"Reached /{id} with id={id}")
     return view
 
 

@@ -1,8 +1,11 @@
-from sqlalchemy import Column, Integer, String, Boolean, ARRAY
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import Column, Integer, String, Boolean, ARRAY, func, DateTime
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.sql.sqltypes import TIMESTAMP
 
 
 # TABLE
+
+
 class Base(DeclarativeBase):
     pass
 
@@ -22,6 +25,22 @@ class Cards(Base):
     card_count = Column(Integer)
 
 
+class LobbyModel(Base):
+    __tablename__ = "lobby"
+
+    lobby_id = Column(Integer, default=None,
+                      primary_key=True, nullable=True)
+    player_id = Column(Integer)
+    lobby_code = Column(String)
+    lobby_pass = Column(String)
+    date_created = Column(
+        DateTime(timezone=True), server_default=func.now())
+    date_ended = Column(
+        DateTime(timezone=True), server_default=func.now())
+    turn_order = Column(Integer)
+    is_active = Column(Boolean)
+
+
 class Deck(Base):
     __tablename__ = "current_deck"
 
@@ -32,3 +51,15 @@ class Deck(Base):
     discard_array = Column(ARRAY(Integer), nullable=True)
     zombie_kitten_count = Column(Integer)
     exploding_kitten_count = Column(Integer)
+
+
+class PlayBoxModel(Base):
+    __tablename__ = "play_box"
+
+    session_id = Column(Integer, default=None,
+                        primary_key=True, nullable=True)
+    player_id = Column(Integer)
+    lobby_id = Column(Integer)
+    current_turn_order = Column(Integer)
+    is_player_dead = Column(Boolean)
+    hand_card_array = Column(ARRAY(Integer), nullable=True)

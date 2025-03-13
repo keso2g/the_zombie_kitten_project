@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from .models import Base
 from .database import engine
 from .routers.card_list_router import card_router
-from .routers.current_deck import deck_router
+from .routers.lobby_router import lobby_router
 
 # FASTAPI
 app = FastAPI(
@@ -16,7 +16,7 @@ app = FastAPI(
 app.include_router(card_router, tags=["cards"],
                    responses={418: {"description": "Link Broken"}},
                    )
-app.include_router(deck_router, tags=["deck"],
+app.include_router(lobby_router, tags=["lobby"],
                    responses={418: {"description": "Link Broken"}},
                    )
 
